@@ -3,14 +3,16 @@ def arithmetic_arranger (problems, answers):
     index = 0
     num1 = []
     num2 = []
-    artop = []
-    plen = []
+    arith_op = []
+    prob_len = []
     equals = []
-    largest = 0
+    large_len = 0
+    arranged_problems = ""
 
     for problem in problems:
 
-        #find position of operator and error check that it is + or -
+        #find position of operator
+        #error check that it is + or -
         if problem.find('+') > 1:
             spos = problem.find('+')
         elif problem.find('-') > 1:
@@ -19,23 +21,26 @@ def arithmetic_arranger (problems, answers):
             print("Error: Operator must be '+' or '-'.")
             quit()
     
+        #seperates the numbers/operator and saves them to corresponding list
         num1.append(str(problem[0 : spos].strip()))
         num2.append(str(problem[spos+1 : ].strip()))
-        artop.append(str(problem[spos : spos+1].strip()))
+        arith_op.append(str(problem[spos : spos+1].strip()))
 
+        #used to determine the length of the problem
         if len(num1[index]) > len(num2[index]):
-            largest = len(num1[index])
+            large_len = len(num1[index])
         else:
-            largest = len(num2[index])
+            large_len = len(num2[index])
 
         #Error check that there is not a number input greater than 4 digits long
-        if largest > 4:
+        if large_len > 4:
             print("Error: Numbers cannot be more than four digits.")
             quit()
 
-        #finds the answer if user requested and error checks that the nums are numbers
+        #finds the answer if user requested
+        #error checks that the nums variables only contain numerical values
         if answers == True:
-            if artop[index] == '+':
+            if arith_op[index] == '+':
                 try:
                     equals.append(str(int(num1[index]) + int(num2[index])))
                 except:
@@ -48,10 +53,12 @@ def arithmetic_arranger (problems, answers):
                     print("Error: Numbers must only contain digits.")
                     quit()
 
-            if largest < len(equals[index]):
-                largest = len(equals[index])
+            #used to determine the length of the problem
+            if large_len < len(equals[index]):
+                large_len = len(equals[index])
 
-        plen.append(largest)
+        #saves the longest length of the problem to list
+        prob_len.append(large_len)
         index = index + 1
 
     #Error checks that there is not more than 5 problems inputed
@@ -59,71 +66,74 @@ def arithmetic_arranger (problems, answers):
         print ("Error: Too many problems.")
         quit()
 
-    outputA_A(num1, num2, artop, plen, equals)
 
-#prints the problems vertically       
-def outputA_A(num1, num2, artop, plen, equals):
-    #prints the num1 on the vertical with requested spaces
+    #Below puts sets up the output and puts it into string (arranged_problems)
+        
+    
+    #puts all first numbers into first line of string
     index = 0
     for num in num1:
-        print ("", end = "  ")
-        if len(num) >= plen[index]:
-            print (num, end = "    ")
+        arranged_problems += "  "
+        if len(num) >= prob_len[index]:
+            arranged_problems += num + "    "
         else:
             space = len(num)
-            while (space < plen[index]):
-                print ("", end = " ")
+            while (space < prob_len[index]):
+                arranged_problems += " "
                 space = space + 1
-            print (num, end = "    ")
-        index = index + 1
-
-    print()
-
-    #prints num2 and operators on the vertical with requested spaces
-    index = 0
-    for num in num2:
-        print (artop[index], end = " ")
-        if len(num) == plen[index]:
-            print (num, end = "    ")
-        else:
-            space = len(num)
-            while (space < plen[index]):
-                print ("", end = " ")
-                space = space + 1
-            print (num, end = "    ")
+            arranged_problems += num + "    "
         index = index + 1
     
-    print()
+    arranged_problems += "\n"
 
-    #prints dashes under the equations on the vertical
-    for x in plen:
+    #puts arithmetic operators and second number into second line of string
+    index = 0
+    for num in num2:
+        arranged_problems += arith_op[index] + " "
+        if len(num) == prob_len[index]:
+            arranged_problems += num + "    "
+        else:
+            space = len(num)
+            while (space < prob_len[index]):
+                arranged_problems += " "
+                space = space + 1
+            arranged_problems += num + "    "
+        index = index + 1
+    
+    arranged_problems += "\n"
+
+    #puts dashes into third line of string
+    for x in prob_len:
         index = x
-        print ("", end = "--")
+        arranged_problems += "--"
         while index > 0:
-            print("", end = "-")
+            arranged_problems += "-"
             index = index - 1
-        print ("", end = "    ")
+        arranged_problems += "    "
 
-    print()
+    arranged_problems += "\n"
 
-    #if answers were requested: prints answers on the vertical with requested spaces
+    #checks if user wants problem solved:
+    #if yes, puts answers into fourth line of string
     index = 0
     if len(equals) > 0:
         for num in equals:
-            print ("", end = "  ")
-            if len(num) >= plen[index]:
-                print (num, end = "    ")
+            arranged_problems += "  "
+            if len(num) >= prob_len[index]:
+                arranged_problems += num + "    "
             else:
                 space = len(num)
-                while (space < plen[index]):
-                    print ("", end = " ")
+                while (space < prob_len[index]):
+                    arranged_problems += " "
                     space = space + 1
-                print (num, end = "    ")
+                arranged_problems += num + "    "
             index = index + 1
 
+    return arranged_problems
+
     
-artprob = input("Please enter an Artmetic Problem: ")
+artprob = input("Please enter an Aritmetic Problem: ")
 if len(artprob) < 1 : artprob = ["2 + 698", "3801 - 2", "45 + 43", "123 + 49", "293 + 332"]
 answers = input ("Do you want the answers: ")
 if len(answers) < 1 : answers = True
-arithmetic_arranger(artprob, answers)
+print(arithmetic_arranger(artprob, answers))
